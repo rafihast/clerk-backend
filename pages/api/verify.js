@@ -1,18 +1,21 @@
 // File: pages/api/verify.js
 import { clerkClient } from "@clerk/clerk-sdk-node";
-import { getAuth } from '@clerk/nextjs/server';
+import { withAuth } from '@clerk/nextjs'; // Pastikan ini diimpor
 
 const handler = async (req, res) => {
-  console.log("🔵 [API] Request masuk ke /api/verify (FINAL)");
+  console.log("🔵 [API] Request masuk ke /api/verify (FINAL DENGAN MIDDLEWARE)");
 
   if (req.method !== "POST") {
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
   const { action, targetUserId, newRole } = req.body;
-  const { userId } = getAuth(req);
+
+  // req.auth sekarang sudah tersedia karena middleware sudah berjalan
+  const { userId } = req.auth; 
 
   if (!userId) {
+    // Ini seharusnya tidak terjadi jika middleware berjalan dengan benar
     return res.status(401).json({ message: "Pengguna tidak terautentikasi." });
   }
 
@@ -53,4 +56,5 @@ const handler = async (req, res) => {
   return res.status(400).json({ message: 'Aksi tidak valid.' });
 };
 
-export default handler;
+// Ekspor handler yang dibungkus dengan withAuth
+export default withAuth(handler);
