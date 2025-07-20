@@ -1,6 +1,9 @@
 // File: pages/api/verify.js
 import { clerkClient } from "@clerk/clerk-sdk-node";
-import { withAuth } from '@clerk/nextjs'; // Pastikan Anda juga menginstal @clerk/nextjs di proyek Vercel Anda
+import { withAuth } from '@clerk/nextjs'; 
+// PASTIKAN ANDA SUDAH MENGINSTAL @clerk/nextjs DI PROYEK BACKEND VERCEL ANDA:
+// npm install @clerk/nextjs
+// ATAU pastikan sudah ada di package.json dan lakukan 'npm install' lalu push ke Git.
 
 // Ubah fungsi handler Anda agar di-wrap oleh withAuth
 const handler = async (req, res) => {
@@ -17,7 +20,8 @@ const handler = async (req, res) => {
   const { userId } = req.auth;
   
   if (!userId) {
-    // Ini seharusnya tidak terjadi jika withAuth bekerja
+    // Ini seharusnya tidak terjadi jika withAuth bekerja dengan benar
+    // dan user sudah terautentikasi.
     return res.status(401).json({ message: "Pengguna tidak terautentikasi." });
   }
 
@@ -36,10 +40,14 @@ const handler = async (req, res) => {
   else if (action === 'updateRole') {
     const actingUserRole = actingUser.publicMetadata.role;
 
+    // Logika otorisasi:
+    // 1. Jika user adalah admin, dia bisa mengubah role siapa saja.
+    // 2. Jika user bukan admin, dia hanya bisa mengubah role dirinya sendiri (untuk default 'siswa').
     if (actingUserRole !== 'admin' && userId !== targetUserId) {
-        return res.status(403).json({ message: 'Akses ditolak.' });
+        return res.status(403).json({ message: 'Akses ditolak. Anda tidak memiliki izin admin untuk mengubah role user lain.' });
     }
     
+    // Validasi data yang diperlukan
     if (!targetUserId || !newRole) {
         return res.status(400).json({ message: 'ID user dan role baru diperlukan.' });
     }
