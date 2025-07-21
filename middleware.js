@@ -1,20 +1,17 @@
-// middleware.js
-import { authMiddleware } from '@clerk/nextjs';
+// middleware.js (in the project root, or src/middleware.js if you’re using a src/ directory)
+import { withClerkMiddleware } from '@clerk/nextjs/server';
+import { NextResponse } from 'next/server';
 
-export default authMiddleware({
-  // Route yang boleh diakses tanpa autentikasi
-  publicRoutes: [
-    '/',                   // home
-    '/login',              // halaman login
-    '/_next/static/:path*',// asset Next.js
-    '/favicon.ico'
-  ]
+export default withClerkMiddleware((req) => {
+  // you can do additional per-request logic here,
+  // or just pass through to your handlers:
+  return NextResponse.next();
 });
 
-// Tentukan route mana yang middleware-nya dijalankan
+// only run this middleware on your API routes (and pages, if you want)
 export const config = {
   matcher: [
-    '/api/:path*',               // semua API route
-    '/((?!_next/|static/|favicon.ico).*)' // semua page kecuali asset Next.js
+    '/api/:path*',
+    '/((?!_next/|static/|favicon.ico).*)'
   ],
 };
