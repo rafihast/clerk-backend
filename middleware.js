@@ -1,17 +1,10 @@
-import { authMiddleware } from "@clerk/nextjs";
+// middleware.js
+import { authMiddleware } from "@clerk/nextjs/server"; // ✅ gunakan dari /server
 
 export default authMiddleware({
-  publicRoutes: ["/", "/api/verify", "/api/hello"],
-  ignoredRoutes: [],
+  publicRoutes: ["/", "/api/verify"], // rute yang bisa diakses tanpa login
 });
 
 export const config = {
-  matcher: [
-    /*
-     * Apply middleware to all routes except:
-     * - static files (_next, favicon, etc)
-     * - public routes
-     */
-    "/((?!_next|favicon.ico|api/verify|api/hello|public).*)",
-  ],
+  matcher: ["/((?!_next|.*\\..*).*)"], // Default matcher dari Clerk
 };
