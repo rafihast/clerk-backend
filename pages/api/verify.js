@@ -1,15 +1,14 @@
 // pages/api/verify.js
-import { clerkClient, getAuth } from '@clerk/nextjs/server';
+import { getAuth, clerkClient } from '@clerk/nextjs/server';
 
 export default async function handler(req, res) {
-  // ————— CORS (jika dibutuhkan) —————
-  res.setHeader('Access-Control-Allow-Origin', '*');  
+  // CORS headers (jika dibutuhkan)
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
-  // ————————————————————————————————
 
   console.log("🔵 [API] Masuk ke /api/verify (update role)");
 
