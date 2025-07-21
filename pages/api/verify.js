@@ -1,6 +1,6 @@
 // File: pages/api/verify.js
 import { clerkClient } from "@clerk/clerk-sdk-node";
-import withAuth from "@clerk/nextjs/api"; // ✅ CORRECT IMPORT
+import { requireAuth } from "@clerk/nextjs/api"; // ✅ Ganti ini
 
 const handler = async (req, res) => {
   console.log("🔵 [API] Request masuk ke /api/verify");
@@ -10,8 +10,7 @@ const handler = async (req, res) => {
   }
 
   const { action, targetUserId, newRole } = req.body;
-  
-  const { userId } = req.auth;
+  const { userId } = req.auth; // ✅ req.auth tetap valid di requireAuth
 
   if (!userId) {
     return res.status(401).json({ message: "Pengguna tidak terautentikasi." });
@@ -54,4 +53,5 @@ const handler = async (req, res) => {
   return res.status(400).json({ message: 'Aksi tidak valid.' });
 };
 
-export default withAuth(handler); // ✅ PASTIKAN withAuth DARI "@clerk/nextjs/api"
+// ✅ Bungkus handler dengan requireAuth
+export default requireAuth(handler);
