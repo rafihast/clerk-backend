@@ -1,5 +1,5 @@
 // File: middleware.js (di root proyek backend Vercel Anda)
-import { clerkMiddleware } from '@clerk/nextjs/server';
+import clerkMiddleware from '@clerk/nextjs/server';
 
 export default clerkMiddleware();
 
