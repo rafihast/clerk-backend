@@ -1,6 +1,6 @@
 // File: pages/api/verify.js
 import { clerkClient } from "@clerk/clerk-sdk-node";
-import { withAuth } from '@clerk/nextjs/server';
+import { withAuth } from '@clerk/nextjs/api';
 
 const handler = async (req, res) => {
   console.log("🔵 [API] Request masuk ke /api/verify");
