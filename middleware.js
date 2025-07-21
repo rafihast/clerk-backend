@@ -1,17 +1,16 @@
-// middleware.js (in the project root, or src/middleware.js if you’re using a src/ directory)
-import { withClerkMiddleware } from '@clerk/nextjs/server';
+// middleware.js
+import { clerkMiddleware } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 
-export default withClerkMiddleware((req) => {
-  // you can do additional per-request logic here,
-  // or just pass through to your handlers:
-  return NextResponse.next();
-});
+// Jalankan Clerk middleware untuk semua route yang dicakup di `matcher`.
+// Ini akan meng-parse header Authorization / cookie dan membuat `getAuth(req)` bisa mendapatkan session.
+export default clerkMiddleware();
 
-// only run this middleware on your API routes (and pages, if you want)
+// Konfigurasi route mana saja yang lewat middleware.
+// Di sini kita apply ke semua API dan page (kecuali asset _next/static, favicon, dll).
 export const config = {
   matcher: [
     '/api/:path*',
     '/((?!_next/|static/|favicon.ico).*)'
-  ],
+  ]
 };
