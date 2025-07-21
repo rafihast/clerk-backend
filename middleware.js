@@ -1,10 +1,8 @@
-// middleware.js
-import { authMiddleware } from "@clerk/nextjs/server"; // ✅ gunakan dari /server
+// File: middleware.js (di root proyek backend Vercel Anda)
+import { clerkMiddleware } from '@clerk/nextjs/server';
 
-export default authMiddleware({
-  publicRoutes: ["/", "/api/verify"], // rute yang bisa diakses tanpa login
-});
+export default clerkMiddleware();
 
 export const config = {
-  matcher: ["/((?!_next|.*\\..*).*)"], // Default matcher dari Clerk
+  matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],
 };

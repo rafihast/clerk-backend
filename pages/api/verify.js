@@ -1,29 +1,24 @@
 // File: pages/api/verify.js
-import { clerkClient, getAuth } from "@clerk/nextjs/server"; // ✅ Gunakan getAuth dari nextjs/server
+import { clerkClient } from "@clerk/clerk-sdk-node";
+import { withAuth } from '@clerk/nextjs'; 
 
-export default async function handler(req, res) {
+const handler = async (req, res) => {
   console.log("🔵 [API] Request masuk ke /api/verify");
 
   if (req.method !== "POST") {
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
-  // ✅ Ambil userId dari getAuth, bukan dari middleware
-  const { userId } = getAuth(req);
+  const { action, targetUserId, newRole } = req.body;
+  
+  // Ambil userId dari req.auth yang diisi oleh middleware.
+  const { userId } = req.auth;
 
   if (!userId) {
     return res.status(401).json({ message: "Pengguna tidak terautentikasi." });
   }
 
-  let actingUser;
-  try {
-    actingUser = await clerkClient.users.getUser(userId);
-  } catch (error) {
-    console.error("🔴 [API] Gagal mengambil data user:", error);
-    return res.status(500).json({ message: "Gagal mengambil data user." });
-  }
-
-  const { action, targetUserId, newRole } = req.body;
+  const actingUser = await clerkClient.users.getUser(userId);
 
   if (action === 'verify') {
     return res.status(200).json({
@@ -58,4 +53,6 @@ export default async function handler(req, res) {
   }
 
   return res.status(400).json({ message: 'Aksi tidak valid.' });
-}
+};
+
+export default withAuth(handler);
