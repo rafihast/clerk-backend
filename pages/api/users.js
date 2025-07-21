@@ -1,4 +1,4 @@
-// pages/api/users.js
+// pages/api/users.js (VERSI UNTUK PENGUJIAN)
 import { getAuth } from '@clerk/nextjs/server';
 import { clerkClient } from '@clerk/clerk-sdk-node';
 
@@ -11,13 +11,14 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  console.log("🔵 [API] Masuk ke /api/users (ambil daftar user)");
+  console.log("🔵 [API] Masuk ke /api/users (ambil daftar user - VERSI TES)");
 
   if (req.method !== 'GET') {
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
   // 1. Ambil session & user yang memanggil
+  // Catatan: Tetap perlu otentikasi untuk mendapatkan user ID
   const { userId: requesterUserId } = getAuth(req);
   if (!requesterUserId) {
     console.log("🔴 [API] Pengguna tidak terotentikasi.");
@@ -25,12 +26,13 @@ export default async function handler(req, res) {
   }
 
   try {
-    // 2. Cek apakah requester punya role admin
-    const requester = await clerkClient.users.getUser(requesterUserId);
-    if (requester.publicMetadata?.role !== 'admin') {
-      console.warn(`⚠️ [API] User ${requesterUserId} bukan admin.`);
-      return res.status(403).json({ message: 'Anda tidak memiliki izin.' });
-    }
+    // 2. [BAGIAN INI DIHAPUS]
+    // Pengecekan role admin dihilangkan untuk tujuan testing.
+    // const requester = await clerkClient.users.getUser(requesterUserId);
+    // if (requester.publicMetadata?.role !== 'admin') {
+    //   console.warn(`⚠️ [API] User ${requesterUserId} bukan admin.`);
+    //   return res.status(403).json({ message: 'Anda tidak memiliki izin.' });
+    // }
 
     // 3. Ambil semua pengguna dari Clerk
     console.log("🟢 [API] Mengambil daftar pengguna...");
