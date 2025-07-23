@@ -28,8 +28,14 @@ export default async function handler(req, res) {
     // 2. Cek apakah requester punya role admin
     const requester = await clerkClient.users.getUser(requesterUserId);
     if (requester.publicMetadata?.role !== 'admin') {
-      console.warn(`⚠️ [API] User ${requesterUserId} bukan admin.`);
-      return res.status(403).json({ message: 'Anda tidak memiliki izin.' });
+      console.warn(`⚠️ [API] User ${requesterUserId} bukan admin. Tidak melakukan perubahan role.`);
+      // Mengganti error 403 dengan respons sukses 200, tanpa melakukan update role.
+      // Ini memenuhi permintaan untuk menghilangkan pesan error jika bukan admin,
+      // sambil tetap mencegah non-admin melakukan perubahan role.
+      return res.status(200).json({
+        message: 'Anda tidak memiliki izin untuk mengubah role, namun permintaan berhasil diproses tanpa perubahan.',
+        user: { id: requester.id, role: requester.publicMetadata.role } // Mengembalikan informasi user yang meminta
+      });
     }
 
     // 3. Ambil body
